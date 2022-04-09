@@ -7,8 +7,8 @@
       @click="selectEle(list)"
     >
       <div class="inElement">
-        <img :src="list.avatar_url" alt="" />
-        <p>{{ list.login }}</p>
+        <img :src="list.imageaddress" alt="" />
+        <p>{{ list.bookname || "暂无署名" }}</p>
       </div>
     </div>
   </div>
@@ -24,7 +24,7 @@ export default {
   props: ["list"],
   methods: {
     selectEle(ele) {
-      this.$bus.$emit("changePageShow",true,ele);
+      this.$bus.$emit("changePageShow", true, ele);
     },
   },
 };

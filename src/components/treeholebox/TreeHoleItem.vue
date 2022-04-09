@@ -3,7 +3,7 @@
     <div class="treehole_itemimg">
       <img :src="item.img_url" alt="" />
       <span>
-        {{ item.uid }}
+        {{ item.nickname }}
       </span>
     </div>
     <div class="treehole_item_element" @click="detailInfo(item)">

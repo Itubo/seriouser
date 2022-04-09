@@ -29,6 +29,12 @@ const routes = [
     path: '/treehole',
     name: 'TreeHole',
     component: () => import("../views/TreeHole"),
+    children: [
+      {
+        path: 'letter',
+        component: () => import("../views/Letter"),
+      }
+    ]
   },
   {
     path: '/update',

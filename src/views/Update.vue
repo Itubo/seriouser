@@ -8,7 +8,7 @@
         <div>上传书籍照片</div>
         <div class="update_element_img">
           <div>
-            <van-uploader :before-read="beforeRead" />
+            <van-uploader :before-read="beforeRead" :after-read="afterRead" />
           </div>
         </div>
       </div>
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import Navbar from "../components/common/Navbar";
 export default {
   name: "Update",
@@ -65,6 +66,15 @@ export default {
   },
   data() {
     return {
+      statusBeginUpload: "uploading",
+      messageBeginUpload: "上传中...",
+      statusFailed: "failed",
+      messageFailed: "上传失败",
+      fileList: [
+        {
+          url: "https://img01.yzcdn.cn/vant/tree.jpg",
+        },
+      ],
       bookName: "", //书名
       author: "", //作者
       press: "", //出版社
@@ -97,6 +107,7 @@ export default {
   methods: {
     beforeRead() {
       console.log("开始调试！");
+      return true;
     },
     // 选择时间完成
     onFinish({ selectedOptions }) {
@@ -104,7 +115,48 @@ export default {
       this.show = false;
       this.fieldValue = selectedOptions.map((option) => option.text).join("/");
     },
-    submit() {},
+    //上传：：
+
+    afterRead(file) {
+      console.log("开始上传操作！");
+      console.log(file);
+      //开始文件上传操作
+      let multipartFile = new FormData();
+      // multipartFile.append('multipartFile',this.dataURLtoFileFun(file.file,'multipartFile'));
+      multipartFile.append("multipartFile", file.file);
+      console.log("这是原本的数据：：：", multipartFile);
+      console.log(multipartFile.get("multipartFile"));
+      console.log(typeof multipartFile);
+      file.status = "uploading";
+      file.message = "上传中...";
+      axios
+        .post("/book/uploadbookimage", multipartFile, {
+          timeout: 5000,
+        })
+        .then((res) => {
+          console.log(res);
+          console.log("上传成功");
+          file.status = "done";
+          file.message = "上传成功";
+          //删除一个头像
+          this.fileList.shift();
+        })
+        .catch((err) => {
+          console.log("出现问题！");
+          console.log(err);
+          file.status = "failed";
+          file.message = "上传失败！";
+          //删除没有上传的头像
+          setTimeout(() => {
+            this.fileList.pop();
+          }, 1000);
+        });
+    },
+
+    submit() {
+      //处理图片：
+      
+    },
   },
 };
 </script>

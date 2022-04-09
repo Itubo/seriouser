@@ -2,7 +2,9 @@
   <div>
     <!-- headerBar -->
     <div class="treeholeBar">
-      <Navbar title="旧 . 树" />
+      <Navbar title="旧 . 树">
+        <van-icon name="arrow-right" />
+      </Navbar>
     </div>
     <div class="treeholeElement">
       <TreeHoleBox :list="list" />
@@ -63,7 +65,7 @@ export default {
     let _that = this;
     console.log("我进入了！");
     axios
-      .post(`/treehole/page${this.p}`)
+      .post("/treehole/showAll")
       .then((res) => {
         _that.list = res.data.data;
         console.log(_that.list);

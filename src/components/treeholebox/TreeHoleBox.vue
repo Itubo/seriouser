@@ -41,12 +41,17 @@
 
 <script>
 import TreeHoleitem from "../treeholebox/TreeHoleItem.vue";
+import axios from "axios";
 export default {
   name: "TreeHoleBox",
   data() {
     return {
       show: false,
       message: "",
+      form: {
+        uid: "",
+        content: "",
+      },
     };
   },
   props: ["list"],
@@ -61,6 +66,8 @@ export default {
     //上传动态
     submitThink() {
       console.log(this.$store.state.uid, this.message);
+      this.form.uid = this.$store.state.uid;
+      this.form.content = this.message;
       let obj = {
         uid: this.$store.state.uid,
         content: this.message,
@@ -71,6 +78,15 @@ export default {
         collected: false,
       };
       if (this.message === "") return;
+      axios
+        .post("/treehole/add", this.form)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+          console.log("报错!");
+        });
       this.list.unshift(obj);
     },
   },

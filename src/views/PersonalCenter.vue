@@ -3,6 +3,7 @@
     <!--  渐变色背景  -->
     <div class="head_bgc">
       <p>个人中心</p>
+      
     </div>
     <!-- 中间个人信息部分   -->
     <div class="personal_information">
@@ -38,6 +39,7 @@
         <li @click="toHistory">上传记录</li>
         <li @click="toCollect">个人收藏</li>
         <li @click="toAddressManger">地址管理</li>
+        <li @click="addProduct">添加商品</li>
         <li @click="toExit">退出登录</li>
       </ul>
     </div>
@@ -45,7 +47,7 @@
 </template>
 
 <script>
-import {Toast} from "vant";
+import { Toast } from "vant";
 
 export default {
   name: "PersonalCenter",
@@ -77,6 +79,9 @@ export default {
       this.$store.commit("deleteToken");
       Toast("退出成功！");
       this.$router.replace("/login");
+    },
+    addProduct() {
+      console.log("这个按钮应该可以");
     },
   },
 };
@@ -214,6 +219,10 @@ information_header div {
   content: "";
 }
 .personal_selector ul li:nth-child(4):before {
+  font-family: "icomoon";
+  content: "";
+}
+.personal_selector ul li:nth-child(5):before {
   font-family: "icomoon";
   content: "";
 }

@@ -8,52 +8,42 @@
     <div class="detaile_element_box">
       <div class="detail_element">
         <div class="detail_element_img">
-          <img :src="item.avatar_url" alt="">
+          <img :src="item.imageaddress" alt="" />
         </div>
         <div class="detail_element_title">
           <div>
-            <h3>{{item.login}}</h3>
-            <van-icon name="like-o" @click="changelike" :class="{likes:likesShow}"/>
+            <h3>{{ item.login }}</h3>
+            <van-icon
+              name="like-o"
+              @click="changelike"
+              :class="{ likes: likesShow }"
+            />
           </div>
           <ul>
             <li>
-            <span>
-              作者
-            </span>
+              <span> 作者 </span>
               <span>
-              {{item.id}}
-            </span>
+                {{ item.author }}
+              </span>
             </li>
             <li>
-            <span>
-              出版社
-            </span>
+              <span> 出版社 </span>
               <span>
-              {{item.login}}
-            </span>
+                {{ item.edition }}
+              </span>
             </li>
             <li>
-            <span>
-              出版时间
-            </span>
-              <span>
-              2020-10
-            </span>
+              <span> 上传时间 </span>
+              <span> {{ item.uploadbook }} </span>
             </li>
             <li>
-            <span>
-              版次
-            </span>
-              <span>
-              1
-            </span>
+              <span> 版次 </span>
+              <span> 1 </span>
             </li>
           </ul>
         </div>
         <div class="detail_element_own">
-          <div class="detail_element_gap">
-
-          </div>
+          <div class="detail_element_gap"></div>
           <div class="detail_element_provider">
             <ul>
               <li>
@@ -95,22 +85,22 @@ export default {
   data() {
     return {
       likesShow: false,
-    }
+    };
   },
-  props: ['item'],
+  props: ["item"],
   components: {
     Navbar,
   },
   methods: {
     goBack() {
-      this.$bus.$emit("changePageShow",false);
+      this.$bus.$emit("changePageShow", false);
     },
     test() {
       console.log(this.item);
     },
     changelike() {
       this.likesShow = !this.likesShow;
-    }
+    },
   },
 };
 </script>
@@ -141,7 +131,8 @@ export default {
 .detail_element_provider {
   padding: 3vh 4vh;
 }
-.detail_element_title h3,.detail_element_title p {
+.detail_element_title h3,
+.detail_element_title p {
   margin: 0;
 }
 .detail_element_title h3 {
@@ -151,7 +142,7 @@ export default {
   margin-bottom: 10px;
   display: inline-block;
 }
-.detail_element_title>div i{
+.detail_element_title > div i {
   float: right;
 }
 .detail_element_title ul,
@@ -161,19 +152,19 @@ export default {
   justify-content: space-between;
 }
 .detail_element_title ul li span:first-child,
-.detail_element_provider ul li span:first-child{
+.detail_element_provider ul li span:first-child {
   display: inline-block;
   width: 20%;
   font-size: 12px;
 }
 .detail_element_title ul li span:last-child,
-.detail_element_provider ul li span:last-child{
+.detail_element_provider ul li span:last-child {
   display: inline-block;
   font-size: 12px;
 }
 .detail_element_title ul li:before,
-.detail_element_provider ul li:before{
-  content: '';
+.detail_element_provider ul li:before {
+  content: "";
   display: inline-block;
   width: 1px;
   height: 10px;
