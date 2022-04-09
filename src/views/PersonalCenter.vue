@@ -3,7 +3,6 @@
     <!--  渐变色背景  -->
     <div class="head_bgc">
       <p>个人中心</p>
-      
     </div>
     <!-- 中间个人信息部分   -->
     <div class="personal_information">
