@@ -45,6 +45,7 @@
 
 <script>
 import axios from "axios";
+import { Toast } from "vant";
 import Navbar from "../components/common/Navbar.vue";
 export default {
   name: "Letter",
@@ -86,7 +87,6 @@ export default {
       axios
         .post("/letter/getrandomletter")
         .then((res) => {
-          console.log(res);
           this.getMailContent = res.data.data.content;
         })
         .catch((err) => {
@@ -94,11 +94,18 @@ export default {
         });
     },
     confirmThree() {
-      console.log("调用了！");
-      axios.post("/letter/writeletter", this.sendMail).then((res) => {
-        console.log(res);
-        // Toast("发送成功,一年后方可再次查看！");
-      });
+      if (!(this.sendMail.content || this.sendMail.content === "")) {
+        axios
+          .post("/letter/writeletter", this.sendMail)
+          .then((res) => {
+            Toast("发送成功,一年后方可再次查看！");
+          })
+          .catch((err) => {
+            console.log("错误！");
+          });
+      } else {
+        Toast("信件内容不能为空！");
+      }
     },
   },
   mounted() {
@@ -129,21 +136,34 @@ export default {
 }
 .letterElement > div {
   display: inline-block;
+  position: absolute;
+  text-align: center;
+  line-height: 4.375rem;
 }
 .letterElement > div:nth-child(1) {
-  width: 50px;
-  height: 50px;
-  background-color: green;
+  left: 1.125rem;
+  top: 35%;
+  width: 4.375rem;
+  height: 4.375rem;
+  border-radius: 50%;
+  background-color: transparent;
 }
 .letterElement > div:nth-child(2) {
-  width: 50px;
-  height: 50px;
-  background-color: green;
+  right: 12px;
+  top: 28%;
+  width: 5rem;
+  height: 4.375rem;
+  border-radius: 50%;
+  background-color: transparent;
 }
 .letterElement > div:nth-child(3) {
-  width: 50px;
-  height: 50px;
-  background-color: green;
+  left: 50%;
+  bottom: 30%;
+  width: 6.25rem;
+  height: 6.25rem;
+  line-height: 6.25rem;
+  transform: translate(-50%, 0);
+  background-color: transparent;
 }
 .showTwo p {
   padding: 20px;

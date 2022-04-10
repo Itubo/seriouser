@@ -24,8 +24,10 @@ export default {
   data() {
     return {
       form: {
-        searchValue: "",
+        bookname: "",
+        address: "",
       },
+      searchValue: "",
       searched: false,
       list: [],
       isLoading: false,
@@ -41,24 +43,42 @@ export default {
     //获取 搜索框输入后，进行搜索 调用 getList
     getValue(value) {
       console.log("我被调用了！", value);
-      this.form.searchValue = value;
-      this.getList();
+      this.searchValue = value;
+      (this.searchValue === "" && this.form.address === "") || !this.searchValue
+        ? this.getList()
+        : this.getQueryList();
     },
     getList() {
+      console.log("调用这个！");
       let _that = this;
-      let str =
-        this.form.searchValue === ""
-          ? "/book/findAllBooks"
-          : "/book/findByQuery";
-      console.log(str);
       axios
-        .post(str)
+        .post("/book/findAllBooks")
         .then((res) => {
           // 接收到后 无论如何，先清除定时器。
           clearTimeout(this.callNet);
-
-          console.log(res.data.data);
-          console.log(typeof res.data.data);
+          _that.list = res.data.data;
+          // this.list = res.data.data;
+          this.isLoading = false;
+          //当请求列表为空时，显示固定图片
+          if (res.data.data.length === 0) {
+            this.$bus.$emit("getNull");
+          }
+        })
+        .catch((err) => {
+          console.log("出现错误！", err);
+          this.$bus.$emit("getError", err);
+          this.checkNet();
+        });
+    },
+    getQueryList() {
+      console.log("this");
+      this.form.bookname = this.searchValue;
+      let _that = this;
+      axios
+        .post("/book/findByQuery", this.form)
+        .then((res) => {
+          // 接收到后 无论如何，先清除定时器。
+          clearTimeout(this.callNet);
           _that.list = res.data.data;
           // this.list = res.data.data;
           this.isLoading = false;
@@ -86,7 +106,7 @@ export default {
   mounted() {
     // 获取搜索 框中传入的值
     this.$bus.$on("getValue", this.getValue);
-    this.getList();
+    this.getValue();
   },
   beforeDestroy() {
     clearTimeout(this.callNet);
