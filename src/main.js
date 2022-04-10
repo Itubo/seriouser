@@ -10,6 +10,10 @@ import { Image as VanImage,Cascader  } from 'vant';
 import axios from 'axios';
 import { Popover } from 'vant';
 
+import { Dialog } from 'vant';
+
+// 全局注册
+Vue.use(Dialog);
 Vue.use(Popover);
 Vue.use(Cascader );
 Vue.use(DatetimePicker);

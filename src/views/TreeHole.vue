@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     showMessage(item) {
-      console.log("我调用你");
+      // console.log("我调用你");
       this.list[this.list.indexOf(item)].show_message = !item.show_message;
     },
     //处理 顶部弹出框 弹出的事件
@@ -72,14 +72,11 @@ export default {
   },
   mounted() {
     let _that = this;
-    console.log("我进入了！");
+    // console.log("我进入了！");
     axios
       .post("/treehole/showAll")
       .then((res) => {
-        console.log(res.data.data.comment);
-        console.log(typeof res.data.data);
         let comment = res.data.data.comment;
-        console.log(typeof res.data.data.comment);
         let treehole = res.data.data.treehole;
         let arr = [];
         treehole.forEach((item, i) => {
@@ -93,9 +90,7 @@ export default {
             }
           });
         });
-        console.log("这是treehole", treehole);
         _that.list = treehole;
-        console.log(_that.list);
         _that.list = _that.list.filter((p) => {
           p.img_url =
             "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/%27Ommelozen_boom%27.jpg/250px-%27Ommelozen_boom%27.jpg";

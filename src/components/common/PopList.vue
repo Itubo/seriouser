@@ -7,8 +7,8 @@
     </ul>
     <div class="popElement" v-show="listShow">
       <ul>
-        <li>聊天室</li>
-        <li>漂流瓶</li>
+        <li><a href="https://2a0e7195.cpolar.cn/chat.html">聊天室</a></li>
+        <li @click="toLetter">漂流瓶</li>
       </ul>
     </div>
   </div>
@@ -22,6 +22,11 @@ export default {
       listShow: false,
     };
   },
+  methods: {
+    toLetter() {
+      this.$router.push("/letter");
+    },
+  },
 };
 </script>
 
@@ -29,7 +34,6 @@ export default {
 .box {
   width: 100px;
   text-align: center;
-  /* background-color: #c2e7b0; */
   display: inline-block;
 }
 .fatherElement {
@@ -50,5 +54,8 @@ export default {
 }
 .popElement li:hover {
   background-color: rgb(7, 193, 96);
+}
+.popElement li a {
+  color: black;
 }
 </style>

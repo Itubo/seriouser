@@ -29,12 +29,11 @@ const routes = [
     path: '/treehole',
     name: 'TreeHole',
     component: () => import("../views/TreeHole"),
-    children: [
-      {
-        path: 'letter',
-        component: () => import("../views/Letter"),
-      }
-    ]
+  },
+  { // 随机消息
+    path: '/letter',
+    name: 'Letter',
+    component: () => import("../views/Letter"),
   },
   {
     path: '/update',
