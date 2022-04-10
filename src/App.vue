@@ -41,9 +41,9 @@ export default {
   mounted() {
     //挂载完毕 在本地查看登录状态
     // localStorage.setItem("token", JSON.stringify("this is token"));
-    // this.$store.commit("setTokenFromLocal");
+    this.$store.commit("setTokenFromLocal");
     // this.$router.replace("/home");
-    this.$router.replace(this.$router.history.current.path);
+    // this.$router.replace(this.$router.history.current.path);
   },
 };
 </script>

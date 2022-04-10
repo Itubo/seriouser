@@ -13,10 +13,14 @@
         </div>
       </div>
       <div>
-        <van-field v-model="bookName" label="书籍名称" placeholder="书籍名称" />
+        <van-field
+          v-model="form.bookname"
+          label="书籍名称"
+          placeholder="书籍名称"
+        />
       </div>
       <div>
-        <van-field v-model="press" label="出版社" placeholder="出版社" />
+        <van-field v-model="form.press" label="出版社" placeholder="出版社" />
       </div>
       <div>
         <van-field
@@ -38,16 +42,16 @@
         </van-popup>
       </div>
       <div>
-        <van-field v-model="edition" label="版次" placeholder="出版次数" />
+        <van-field v-model="form.price" label="价格" placeholder="出版次数" />
       </div>
       <div>
-        <van-field v-model="address" label="出书地址" placeholder="地址" />
+        <van-field v-model="form.address" label="出书地址" placeholder="地址" />
       </div>
       <div>
-        <van-field v-model="QQnumber" label="QQ" placeholder="QQ账号" />
+        <van-field v-model="form.qqnumber" label="QQ" placeholder="QQ账号" />
       </div>
       <div>
-        <van-field v-model="tel" label="联系电话" placeholder="联系电话" />
+        <van-field v-model="form.tel" label="联系电话" placeholder="联系电话" />
       </div>
     </div>
     <div class="submit">
@@ -59,6 +63,7 @@
 <script>
 import axios from "axios";
 import Navbar from "../components/common/Navbar";
+import { Toast } from "vant";
 export default {
   name: "Update",
   components: {
@@ -75,13 +80,15 @@ export default {
           url: "https://img01.yzcdn.cn/vant/tree.jpg",
         },
       ],
-      bookName: "", //书名
-      author: "", //作者
-      press: "", //出版社
-      edition: "", // 版次
-      address: "", // 地址
-      QQnumber: "", // QQ 号
-      tel: "", // 联系电话
+      form: {
+        uid: "",
+        bookname: "", //书名
+        press: "", //出版社
+        address: "", // 地址
+        qqnumber: "", // QQ 号
+        tel: "", // 联系电话
+        price: "", // 价格
+      },
       show: false,
       fieldValue: "",
       cascaderValue: "", //出版时间
@@ -154,8 +161,22 @@ export default {
     },
 
     submit() {
+      this.form.uid = this.$store.state.uid;
+      console.log(this.form);
       //处理图片：
-      
+      axios
+        .post("/book/savebook", this.form)
+        .then((res) => {
+          if (res.data.data.flag) {
+            console.log(res);
+            Toast("上传成功！");
+          }
+          Toast("出现错误！");
+        })
+        .catch((err) => {
+          console.log("上传失败", err);
+          Toast("上传失败！");
+        });
     },
   },
 };

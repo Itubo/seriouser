@@ -38,7 +38,6 @@
         <li @click="toHistory">上传记录</li>
         <li @click="toCollect">个人收藏</li>
         <li @click="toAddressManger">地址管理</li>
-        <li @click="addProduct">添加商品</li>
         <li @click="toExit">退出登录</li>
       </ul>
     </div>
@@ -218,10 +217,6 @@ information_header div {
   content: "";
 }
 .personal_selector ul li:nth-child(4):before {
-  font-family: "icomoon";
-  content: "";
-}
-.personal_selector ul li:nth-child(5):before {
   font-family: "icomoon";
   content: "";
 }

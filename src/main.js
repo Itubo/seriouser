@@ -8,6 +8,9 @@ import { Field, Cell, CellGroup, Button, Icon, Form,Tabbar, TabbarItem,Search,
   AddressList,Popup,Toast,DatetimePicker } from 'vant';
 import { Image as VanImage,Cascader  } from 'vant';
 import axios from 'axios';
+import { Popover } from 'vant';
+
+Vue.use(Popover);
 Vue.use(Cascader );
 Vue.use(DatetimePicker);
 Vue.use(Toast);
@@ -36,7 +39,7 @@ Vue.use(Field);
 
 Vue.config.productionTip = false
 
-axios.defaults.baseURL="https://49570654.cpolar.cn/";
+axios.defaults.baseURL="https://2a0e7195.cpolar.cn";
 // axios.defaults.baseURL="http://116.205.137.0:80";
 // axios.defaults.withCredentials= true;
 axios.defaults.headers.common['Authorization'] = "";

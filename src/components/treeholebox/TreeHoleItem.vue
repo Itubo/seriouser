@@ -19,20 +19,25 @@
     </div>
     <div class="treehole_item_bottom">
       <div class="input">
-        <input type="text" placeholder="留言" />
+        <input
+          type="text"
+          v-model="form.ccontent"
+          placeholder="留言"
+          @blur="submitComment"
+        />
       </div>
       <div class="button">
-        <van-icon name="like-o" />
+        <van-icon name="like-o" style="z-index: -1px" />
         <van-icon name="star-o" />
       </div>
     </div>
     <!-- 留言模块！ -->
-    <div class="leave_message" v-show="item.show_message">
+    <div class="leave_message">
       <div>
         <ul>
-          <li v-for="message in messageList" :key="message">
-            <p>匿名用户 :</p>
-            <p>{{ message }}</p>
+          <li v-for="(msg, index) in item.ccontent" :key="index">
+            <p>匿名：</p>
+            <p>{{ msg }}</p>
           </li>
         </ul>
       </div>
@@ -41,26 +46,41 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "TreeHoleitem",
   data() {
     return {
-      messageList: [
-        "好诗好诗好诗好诗好诗好诗好诗好诗好诗好诗好诗好诗好诗好诗",
-        "妙哉妙哉",
-        "真棒真棒",
-      ],
+      form: {
+        ccontent: "",
+        uid: "",
+        tid: "",
+      },
     };
   },
   props: ["item"],
   methods: {
     detailInfo(item) {
+      this.item.show_message = !this.item.show_message;
       this.$bus.$emit("showMessage", item);
     },
+    //添加 comment  请求：
+    submitComment() {
+      this.form.uid = this.$store.state.uid;
+      this.form.tid = this.item.tid;
+      axios
+        .post("/comment/add", this.form)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log("报错!", err);
+        });
+    },
   },
-  moutned() {
+  mounted() {
     console.log("我使用了！");
-    console.log(this.item);
+    this.messageList = this.item.ccontent;
   },
 };
 </script>

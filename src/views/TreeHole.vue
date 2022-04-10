@@ -2,9 +2,10 @@
   <div>
     <!-- headerBar -->
     <div class="treeholeBar">
-      <Navbar title="旧 . 树">
-        <van-icon name="arrow-right" />
-      </Navbar>
+      <Navbar title="旧 . 树"> </Navbar>
+      <div class="menu">
+        <pop-list></pop-list>
+      </div>
     </div>
     <div class="treeholeElement">
       <TreeHoleBox :list="list" />
@@ -15,6 +16,7 @@
 <script>
 import axios from "axios";
 import Navbar from "../components/common/Navbar.vue";
+import PopList from "../components/common/PopList.vue";
 import TreeHoleBox from "../components/treeholebox/TreeHoleBox.vue";
 export default {
   name: "TreeHole",
@@ -50,15 +52,22 @@ export default {
         },
       ],
       p: 1,
+      //顶部弹出框
     };
   },
   components: {
     Navbar,
     TreeHoleBox,
+    PopList,
   },
   methods: {
     showMessage(item) {
-      item.show_message = !item.show_message;
+      console.log("我调用你");
+      this.list[this.list.indexOf(item)].show_message = !item.show_message;
+    },
+    //处理 顶部弹出框 弹出的事件
+    onSelect(action) {
+      Toast(action.text);
     },
   },
   mounted() {
@@ -67,7 +76,25 @@ export default {
     axios
       .post("/treehole/showAll")
       .then((res) => {
-        _that.list = res.data.data;
+        console.log(res.data.data.comment);
+        console.log(typeof res.data.data);
+        let comment = res.data.data.comment;
+        console.log(typeof res.data.data.comment);
+        let treehole = res.data.data.treehole;
+        let arr = [];
+        treehole.forEach((item, i) => {
+          treehole[i].ccontent = [];
+        });
+        treehole.forEach((item, i) => {
+          comment.forEach((value, j) => {
+            if (value.tid === item.tid) {
+              treehole[i].ccontent.unshift(value.ccontent);
+              treehole[i].ctime = value.time;
+            }
+          });
+        });
+        console.log("这是treehole", treehole);
+        _that.list = treehole;
         console.log(_that.list);
         _that.list = _that.list.filter((p) => {
           p.img_url =
@@ -75,12 +102,11 @@ export default {
           p.img_url_in = [];
           p.likes = false;
           p.collected = false;
+          p.show_message = false;
           return true;
         });
-        console.log(res.data);
       })
       .catch((err) => {
-        // Toast("网络错误！");
         console.log("出现错误！", err);
       });
     this.$bus.$on("showMessage", this.showMessage);
@@ -92,6 +118,11 @@ export default {
 .all {
   background-color: rgb(7, 193, 96);
   color: #fff;
+}
+.menu {
+  position: absolute;
+  top: 3vh;
+  right: 2vh;
 }
 .treeholeElement {
   width: 100%;

@@ -23,7 +23,10 @@ export default {
   name: "List",
   data() {
     return {
-      searchValue: "python",
+      form: {
+        searchValue: "",
+      },
+      searched: false,
       list: [],
       isLoading: false,
       callNet: {},
@@ -37,28 +40,22 @@ export default {
   methods: {
     //获取 搜索框输入后，进行搜索 调用 getList
     getValue(value) {
-      this.searchValue = value;
+      console.log("我被调用了！", value);
+      this.form.searchValue = value;
       this.getList();
     },
     getList() {
-      if (this.searchValue === "") return alert("请输入查询内容");
       let _that = this;
+      let str =
+        this.form.searchValue === ""
+          ? "/book/findAllBooks"
+          : "/book/findByQuery";
+      console.log(str);
       axios
-        .post("/book/findAllBooks")
+        .post(str)
         .then((res) => {
           // 接收到后 无论如何，先清除定时器。
           clearTimeout(this.callNet);
-
-          // let newArray = [];
-          // for (let i in res.data.data) {
-          //   for (let key in res.data.data[i].course) {
-          //     //console.log("属性:"+key);
-          //     this.$set(this.list, key, res.data.data[i].course[key]); //对象新增属性(使用Vue.$set())
-          //     // newArray[i] = this.list;  //新建数组存放
-          //     // this.list.push(i + ':' + JSON.stringify(res.data[k].course[i]));
-          //   }
-          //   // this.list = [];  //循环完必须清空,否则可能会覆盖
-          //   console.log("这是list", this.list);
 
           console.log(res.data.data);
           console.log(typeof res.data.data);

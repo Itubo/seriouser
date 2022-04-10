@@ -5,32 +5,43 @@
         <van-icon name="arrow-left" @click="goBack" />
       </Navbar>
     </div>
-    <div class="list_body_ele">
+    <div class="list_body_ele" v-if="list.length != 0">
       <ul>
         <li v-for="(item, index) in list" :key="index">
           <div class="list_body_ele_img">
-            <img :src="item.avatar_url" alt="" />
+            <img :src="item.imageaddress" alt="" />
           </div>
           <div>
-            {{ item.login }}
+            {{ item.bookname }}
             <span @click="edit(item)">
-              <van-icon name="delete-o" />
+              <van-icon v-if="item.exist" name="success" />
+              <van-icon v-if="!item.exist" name="cross" />
             </span>
           </div>
         </li>
       </ul>
+    </div>
+    <div v-if="list.length === 0" class="empty_me">
+      <van-empty description="列表为空" />
     </div>
   </div>
 </template>
 
 <script>
 import Navbar from "../components/common/Navbar";
+import axios from "axios";
 import request from "../network";
 export default {
   name: "MyUpdate",
   data() {
     return {
-      list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+      list: [],
+      form: {
+        id: 0,
+      },
+      uid: {
+        uid: "",
+      },
     };
   },
   components: {
@@ -42,29 +53,42 @@ export default {
     },
     edit(value) {
       console.log("edit", value);
-      this.list = this.list.filter((p) => {
-        return p.login != value.login;
-      });
+      this.form.id = value.id;
+      console.log(this.form.id);
+      console.log(value.id);
+      // this.list = this.list.filter((p) => {
+      //   return p.login != value.login;
+      // });
+      value.exist = false;
+      let _that = this;
+      axios
+        .post("/book/changeBook", this.form)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log("出现错误额！", err);
+        });
     },
   },
   mounted() {
-    request({
-      url: "https://api.github.com/search/users?q=java",
-    })
+    let _that = this;
+    this.uid.uid = this.$store.state.uid;
+    axios
+      .post("/book/showOnesBooks", this.uid)
       .then((res) => {
         // 接收到后 无论如何，先清除定时器。
-        clearTimeout(this.callNet);
-        this.list = res.data.items;
-        console.log(this.list);
-        this.isLoading = false;
+        clearTimeout(_that.callNet);
+        _that.list = res.data.data;
+        console.log(res);
+        _that.isLoading = false;
         //当请求列表为空时，显示固定图片
-        if (res.data.items.length === 0) {
+        if (res.data.data.length === 0) {
           this.$bus.$emit("getNull");
         }
       })
       .catch((err) => {
         this.$bus.$emit("getError", err);
-        this.checkNet();
       });
   },
 };
@@ -105,5 +129,13 @@ export default {
 }
 .list_body_ele_img img {
   height: 80%;
+}
+.empty_me {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.empty_me .van-empty__image {
 }
 </style>

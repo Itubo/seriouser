@@ -140,13 +140,9 @@ export default {
       file.status = "uploading";
       file.message = "上传中...";
       axios
-        .post(
-          "http://116.205.137.0:80/user/uploadheadportrait",
-          multipartFile,
-          {
-            timeout: 5000,
-          }
-        )
+        .post("user/uploadheadportrait", multipartFile, {
+          timeout: 5000,
+        })
         .then((res) => {
           console.log(res);
           console.log("上传成功");
