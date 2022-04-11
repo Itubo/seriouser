@@ -15,21 +15,28 @@
             <h3>{{ item.login }}</h3>
             <van-icon
               name="like-o"
-              @click="changelike"
+              v-show="likesShow"
+              @click="sendLike"
               :class="{ likes: likesShow }"
+            />
+            <van-icon
+              name="like"
+              v-show="!likesShow"
+              @click="changelike"
+              color="green"
             />
           </div>
           <ul>
             <li>
               <span> 作者 </span>
               <span>
-                {{ item.author }}
+                {{ item.author || "未知" }}
               </span>
             </li>
             <li>
               <span> 出版社 </span>
               <span>
-                {{ item.edition }}
+                {{ item.press || "未上传" }}
               </span>
             </li>
             <li>
@@ -60,15 +67,15 @@
               </li>
               <li>
                 <span>QQ</span>
-                <span>12345678910</span>
+                <span>{{ item.qqnumber }}</span>
               </li>
               <li>
                 <span>联系电话</span>
-                <span>12345678910</span>
+                <span>{{ item.tel }}</span>
               </li>
               <li>
                 <span>出书地址</span>
-                <span>新区东苑</span>
+                <span>{{ item.address }}</span>
               </li>
             </ul>
           </div>
@@ -80,11 +87,19 @@
 
 <script>
 import Navbar from "../common/Navbar";
+import axios from "axios";
 export default {
   name: "Details",
   data() {
     return {
-      likesShow: false,
+      likesShow: true,
+      form: {
+        id: "",
+      },
+      sendLi: {
+        id: "",
+        uid: "",
+      },
     };
   },
   props: ["item"],
@@ -101,6 +116,33 @@ export default {
     changelike() {
       this.likesShow = !this.likesShow;
     },
+    //请求收藏
+    sendLike() {
+      this.changelike();
+      this.sendLi.id = this.item.id;
+      this.sendLi.uid = this.$store.state.uid;
+      axios
+        .post("/book/wantBuy", this.sendLi)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+  },
+  mounted() {
+    console.log(this.item);
+    this.form.id = this.item.id;
+    axios
+      .post("/book/findOneBook", this.form)
+      .then((res) => {
+        console.log(res);
+        res.data.data
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
 };
 </script>

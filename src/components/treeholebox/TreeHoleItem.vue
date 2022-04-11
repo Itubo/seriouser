@@ -79,7 +79,6 @@ export default {
     },
   },
   mounted() {
-    console.log("我使用了！");
     this.messageList = this.item.ccontent;
   },
 };

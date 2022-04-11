@@ -11,16 +11,31 @@
       <div @click="showPop(3)">许愿望</div>
     </div>
     <div>
-      <van-dialog
+      <!-- <van-dialog
         v-model="show_one"
         :title="title"
         show-cancel-button
         confirmButtonText="发送"
       >
-      </van-dialog>
+      </van-dialog> -->
       <van-dialog v-model="show_two" :title="title" show-cancel-button>
         <div class="showTwo">
-          <p>{{ getMailContent }}</p>
+          <p v-html="getMailContent"></p>
+          <div class="inputMessage">
+            <div>
+              <label for="">
+                留言
+                <input type="text" v-model="form.content" />
+              </label>
+            </div>
+            <div>
+              <label for="">
+                <input type="checkbox" v-model="anonymous" />
+                是否匿名
+              </label>
+              <button @click="sendliuyan">发送</button>
+            </div>
+          </div>
         </div>
       </van-dialog>
       <van-dialog
@@ -60,6 +75,12 @@ export default {
         uid: "",
         content: "",
       },
+      anonymous: false,
+      form: {
+        content: "",
+        uid: "",
+        verify: "",
+      },
     };
   },
   components: {
@@ -73,7 +94,8 @@ export default {
     async showPop(e) {
       if (e === 1) {
         this.title = "留声机";
-        this.show_one = !this.show_one;
+        // this.show_one = !this.show_one;
+        this.$router.push("/leavemessage");
       } else if (e === 2) {
         this.title = "树洞来信";
         await this.getContentHoleLetter();
@@ -87,14 +109,15 @@ export default {
       axios
         .post("/letter/getrandomletter")
         .then((res) => {
-          this.getMailContent = res.data.data.content;
+          this.getMailContent = res.data.data.content.replace(/\r\n/g, "<br/>");
+          this.form.verify = res.data.data.verify;
         })
         .catch((err) => {
           console.log(err);
         });
     },
     confirmThree() {
-      if (!(this.sendMail.content || this.sendMail.content === "")) {
+      if (!(this.sendMail.content === "")) {
         axios
           .post("/letter/writeletter", this.sendMail)
           .then((res) => {
@@ -106,6 +129,20 @@ export default {
       } else {
         Toast("信件内容不能为空！");
       }
+    },
+    sendliuyan() {
+      if (!this.anonymous) {
+        this.form.uid = this.$store.state.uid;
+      }
+      console.log(this.form);
+      axios
+        .post("/letter/replyletter", this.form)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
   mounted() {
@@ -174,5 +211,15 @@ export default {
 }
 .showThree {
   text-align: center;
+}
+
+.inputMessage > div {
+  padding: 0 1.25rem;
+  box-sizing: border-box;
+  margin-bottom: 0.625rem;
+}
+.inputMessage > div:nth-child(2) button {
+  float: right;
+  margin-right: 2.5rem;
 }
 </style>

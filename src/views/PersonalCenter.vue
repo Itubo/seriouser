@@ -46,6 +46,7 @@
 
 <script>
 import { Toast } from "vant";
+import axios from "axios";
 
 export default {
   name: "PersonalCenter",
@@ -54,6 +55,9 @@ export default {
       src: "https://img01.yzcdn.cn/vant/cat.jpeg",
       title: "你的昵称",
       dec: "这个人很懒，什么也没留下.",
+      form: {
+        uid: "",
+      },
     };
   },
   methods: {
@@ -68,6 +72,7 @@ export default {
     },
     toCollect() {
       console.log("我点击这个个人收藏了");
+      this.$router.push("/owncollect");
     },
     toAddressManger() {
       console.log("我点击这个地址管理了!");
@@ -81,6 +86,21 @@ export default {
     addProduct() {
       console.log("这个按钮应该可以");
     },
+  },
+  mounted() {
+    this.form.uid = this.$store.state.uid;
+    axios
+      .post("/user/findUserInfo", this.form)
+      .then((res) => {
+        console.log(res);
+        this.src = res.data.data.headportrait;
+        this.title = res.data.data.nickname;
+        this.dec = res.data.data.description;
+      })
+      .catch((err) => {
+        Toast("网络出现问题！");
+        console.log("err::", err);
+      });
   },
 };
 </script>

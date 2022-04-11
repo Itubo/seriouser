@@ -9,10 +9,8 @@
       shape="round"
     />
     <div class="button_right">
-      <van-icon name="arrow-down" />
-      <ul>
-        <li>123456</li>
-      </ul>
+      <van-icon name="arrow-down" @click="showListPop"/>
+      {{ address }}
     </div>
   </div>
 </template>
@@ -23,6 +21,7 @@ export default {
   data() {
     return {
       value: "",
+      address: "",
     };
   },
   methods: {
@@ -32,6 +31,16 @@ export default {
     changeNullStatus() {
       this.$bus.$emit("setShowNullFalse");
     },
+    showListPop() {
+      this.$bus.$emit("showListPop");
+    },
+    //修改图标：
+    changRightElement(value) {
+      this.address = value;
+    },
+  },
+  mounted() {
+    this.$bus.$on("changRightElement", this.changRightElement);
   },
 };
 </script>
@@ -51,7 +60,7 @@ export default {
   vertical-align: top;
   text-align: center;
   line-height: 4rem;
-  font-size: 1.5625rem;
+  font-size: 1.25rem;
   color: #fff;
   background-color: rgb(79, 192, 141);
 }

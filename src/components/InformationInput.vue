@@ -57,7 +57,7 @@
         colon
       />
       <div>
-        <van-cell is-link title="选择地区" @click="show = true" />
+        <van-cell is-link title="选择家乡" @click="show = true" />
         <van-action-sheet v-model="show" title="地区选择">
           <div class="content">
             <van-area
@@ -70,7 +70,7 @@
           </div>
         </van-action-sheet>
         <div class="areaName" v-show="!showArea">
-          <div>地址：</div>
+          <div>家乡：</div>
           <div>{{ province }}--{{ town }}--{{ area }}</div>
         </div>
       </div>
@@ -78,7 +78,7 @@
 
     <!--    提交按钮！-->
     <div class="button_area">
-      <van-button type="primary" to="index">确定修改</van-button>
+      <van-button type="primary">确定修改</van-button>
     </div>
   </div>
 </template>
@@ -161,29 +161,6 @@ export default {
             this.fileList.pop();
           }, 1000);
         });
-      // request({
-      //   url: '/user/uploadheadportrait',
-      //   data: multipartFile,
-      //   timeout: 5000,
-      // })
-      // .then(res => {
-      //   console.log(res);
-      //   console.log('上传成功');
-      //   file.status = 'done';
-      //   file.message = '上传成功';
-      //   //删除一个头像
-      //   this.fileList.shift();
-      // })
-      // .catch(err => {
-      //   console.log('出现问题！');
-      //   console.log(err);
-      //   file.status = 'failed';
-      //   file.message = '上传失败！';
-      //   //删除没有上传的头像
-      //   setTimeout(()=> {
-      //     this.fileList.pop();
-      //   },1000)
-      // })
     },
     confirm(value) {
       this.province = value[0].name;
@@ -269,10 +246,14 @@ export default {
   display: flex;
   justify-content: space-around;
 }
-.button_area button {
+.button_area > button {
   width: 40vh;
   margin-top: 1vh;
   height: 50px;
   border-radius: 25px;
+}
+
+/deep/.van-picker__toolbar button {
+  position: unset;
 }
 </style>

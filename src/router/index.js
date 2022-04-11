@@ -36,6 +36,11 @@ const routes = [
     component: () => import("../views/Letter"),
   },
   {
+    path: '/leavemessage',
+    name: 'LeaveMessage',
+    component: () => import("../components/LeaveMessage.vue"),
+  },
+  {
     path: '/update',
     name: 'Update',
     component: () => import("../views/Update"),
@@ -44,6 +49,11 @@ const routes = [
     path: '/user',
     name: 'PersonalCenter',
     component: () => import('../views/PersonalCenter.vue'),
+  },
+  {
+    path: '/owncollect',
+    name: 'OwnCollect',
+    component: () => import("../views/OwnCollect.vue"),
   },
   {//登陆
     path: '/login',

@@ -196,7 +196,7 @@ export default {
     getsms() {
       axios
         .post(
-          "http://116.205.137.0:80/sendMail/sendMailVerfityINput",
+          "/sendMail/sendMailVerfityINput",
           {
             email: this.form.email,
           },
@@ -217,7 +217,7 @@ export default {
       //首先验证验证码
       await axios
         .post(
-          "http://116.205.137.0:80/user/check",
+          "/user/check",
           {
             nickname: this.form.nickname,
             verifycode: this.form.verifycode,
@@ -238,7 +238,7 @@ export default {
         });
       if (this.checked) {
         axios
-          .post("http://116.205.137.0:80/user/modifypasswd", {
+          .post("/user/modifypasswd", {
             nickname: this.form.nickname,
             passwd: this.form.passwd,
           })

@@ -29,6 +29,7 @@
 
 <script>
 import Navbar from "../components/common/Navbar";
+import { Dialog, Toast } from "vant";
 import axios from "axios";
 import request from "../network";
 export default {
@@ -51,45 +52,54 @@ export default {
     goBack() {
       this.$router.back();
     },
+    //删除上传旧书信息！
     edit(value) {
-      console.log("edit", value);
-      this.form.id = value.id;
-      console.log(this.form.id);
-      console.log(value.id);
-      // this.list = this.list.filter((p) => {
-      //   return p.login != value.login;
-      // });
-      value.exist = false;
+      Dialog.confirm({
+        title: "删除",
+        message: "请确定是否删除,删除后不可恢复！",
+      })
+        .then(() => {
+          this.form.id = value.id;
+          // this.list = this.list.filter((p) => {
+          //   return p.login != value.login;
+          // });
+          value.exist = false;
+          let _that = this;
+          axios
+            .post("/book/changeBook", this.form)
+            .then((res) => {
+              Toast("成功！");
+            })
+            .catch((err) => {
+              console.log("出现错误额！", err);
+            });
+          this.getList();
+        })
+        .catch(() => {});
+    },
+    getList() {
       let _that = this;
+      this.uid.uid = this.$store.state.uid;
       axios
-        .post("/book/changeBook", this.form)
+        .post("/book/showOnesBooks", this.uid)
         .then((res) => {
-          console.log(res);
+          // 接收到后 无论如何，先清除定时器。
+          clearTimeout(_that.callNet);
+          _that.list = res.data.data;
+          _that.isLoading = false;
+          //当请求列表为空时，显示固定图片
+          if (res.data.data.length === 0) {
+            this.$bus.$emit("getNull");
+          }
         })
         .catch((err) => {
-          console.log("出现错误额！", err);
+          this.$bus.$emit("getError", err);
         });
     },
   },
+
   mounted() {
-    let _that = this;
-    this.uid.uid = this.$store.state.uid;
-    axios
-      .post("/book/showOnesBooks", this.uid)
-      .then((res) => {
-        // 接收到后 无论如何，先清除定时器。
-        clearTimeout(_that.callNet);
-        _that.list = res.data.data;
-        console.log(res);
-        _that.isLoading = false;
-        //当请求列表为空时，显示固定图片
-        if (res.data.data.length === 0) {
-          this.$bus.$emit("getNull");
-        }
-      })
-      .catch((err) => {
-        this.$bus.$emit("getError", err);
-      });
+    this.getList();
   },
 };
 </script>

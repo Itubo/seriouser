@@ -8,7 +8,16 @@
       >
         <ListItem :list="list"></ListItem>
       </van-pull-refresh>
+      <div>
+        <!-- <van-cell is-link title="基础用法" @click="show = true" /> -->
+        <van-action-sheet
+          v-model="show"
+          :actions="actions"
+          @select="onSelect"
+        />
+      </div>
     </div>
+
     <div v-if="showDetails">
       <router-view />
     </div>
@@ -33,6 +42,16 @@ export default {
       isLoading: false,
       callNet: {},
       showIndex: true,
+
+      //列表弹出框
+      show: false, // 是否展示弹出层
+      actions: [
+        { name: "东苑" },
+        { name: "华苑" },
+        { name: "北苑" },
+        { name: "顺和" },
+        { name: "郑州" },
+      ],
     };
   },
   props: ["showDetails"],
@@ -42,14 +61,12 @@ export default {
   methods: {
     //获取 搜索框输入后，进行搜索 调用 getList
     getValue(value) {
-      console.log("我被调用了！", value);
       this.searchValue = value;
       (this.searchValue === "" && this.form.address === "") || !this.searchValue
         ? this.getList()
         : this.getQueryList();
     },
     getList() {
-      console.log("调用这个！");
       let _that = this;
       axios
         .post("/book/findAllBooks")
@@ -65,13 +82,11 @@ export default {
           }
         })
         .catch((err) => {
-          console.log("出现错误！", err);
           this.$bus.$emit("getError", err);
           this.checkNet();
         });
     },
     getQueryList() {
-      console.log("this");
       this.form.bookname = this.searchValue;
       let _that = this;
       axios
@@ -88,7 +103,6 @@ export default {
           }
         })
         .catch((err) => {
-          console.log("出现错误！", err);
           this.$bus.$emit("getError", err);
           this.checkNet();
         });
@@ -102,10 +116,20 @@ export default {
         this.getList();
       }, 2000);
     },
+    //动作弹出事件
+    changeShowSelect() {
+      this.show = true;
+    },
+    onSelect(item) {
+      this.form.address = item.name;
+      this.$bus.$emit("changRightElement", this.form.address);
+      this.show = false;
+    },
   },
   mounted() {
     // 获取搜索 框中传入的值
     this.$bus.$on("getValue", this.getValue);
+    this.$bus.$on("showListPop", this.changeShowSelect);
     this.getValue();
   },
   beforeDestroy() {
