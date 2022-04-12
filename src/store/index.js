@@ -10,6 +10,7 @@ export default new Vuex.Store({
     email: '',
     uid: '85a8bfc97663df004efb2a4d8418d936',
     token: '',
+    collectItem: "",
     // sex: '',
     // schoolYear: '',
   },
@@ -31,6 +32,10 @@ export default new Vuex.Store({
     deleteToken(state) {
       state.token = "";
       localStorage.setItem("token",JSON.stringify(""));
+    },
+    setCollectItem(state,item) {
+      console.log("这是 state中的",item);
+      state.collectItem = item;
     }
   },
   actions: {

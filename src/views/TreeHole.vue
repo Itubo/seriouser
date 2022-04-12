@@ -109,7 +109,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .all {
   background-color: rgb(7, 193, 96);
   color: #fff;

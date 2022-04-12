@@ -9,7 +9,7 @@
       shape="round"
     />
     <div class="button_right">
-      <van-icon name="arrow-down" @click="showListPop"/>
+      <van-icon name="arrow-down" @click="showListPop" />
       {{ address }}
     </div>
   </div>
@@ -56,7 +56,7 @@ export default {
 .button_right {
   width: 20%;
   display: inline-block;
-  height: 4rem;
+  height: 3.375rem;
   vertical-align: top;
   text-align: center;
   line-height: 4rem;

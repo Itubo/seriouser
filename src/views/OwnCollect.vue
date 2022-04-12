@@ -42,6 +42,7 @@ export default {
     axios
       .post("/book/mywant", this.form)
       .then((res) => {
+        console.log(res);
         this.list = res.data.data;
       })
       .catch((err) => {
@@ -53,6 +54,10 @@ export default {
 </script>
 
 <style scoped>
+.all {
+  background-color: rgb(7, 193, 96);
+  color: #fff;
+}
 .ownCollectElement {
   width: 100%;
   height: 85vh;

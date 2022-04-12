@@ -92,13 +92,14 @@
 </template>
 
 <script>
-import Navbar from "../common/Navbar";
+import Navbar from "./common/Navbar";
 import { Toast } from "vant";
 import axios from "axios";
 export default {
-  name: "Details",
+  name: "OwnCollectElementDetail",
   data() {
     return {
+      item: {},
       likesShow: false,
       college: "",
       nickname: "",
@@ -116,13 +117,12 @@ export default {
       },
     };
   },
-  props: ["item"],
   components: {
     Navbar,
   },
   methods: {
     goBack() {
-      this.$bus.$emit("changePageShow", false);
+      this.$router.go(-1);
     },
     test() {
       console.log(this.item);
@@ -145,7 +145,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.item);
+    this.item = this.$store.state.collectItem;
     this.form.id = this.item.id;
     this.form.uidn = this.$store.state.uid;
     axios

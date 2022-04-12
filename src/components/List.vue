@@ -61,8 +61,8 @@ export default {
   methods: {
     //获取 搜索框输入后，进行搜索 调用 getList
     getValue(value) {
-      this.searchValue = value;
-      (this.searchValue === "" && this.form.address === "") || !this.searchValue
+      this.searchValue = value || "";
+      this.searchValue === "" && this.form.address === ""
         ? this.getList()
         : this.getQueryList();
     },
@@ -123,6 +123,7 @@ export default {
     onSelect(item) {
       this.form.address = item.name;
       this.$bus.$emit("changRightElement", this.form.address);
+      this.getQueryList();
       this.show = false;
     },
   },

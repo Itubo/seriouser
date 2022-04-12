@@ -55,6 +55,11 @@ const routes = [
     name: 'OwnCollect',
     component: () => import("../views/OwnCollect.vue"),
   },
+  {
+    path: "/owncollectelementdetail",
+    name: "owncollectelementdetail",
+    component: () => import("../components/OwnCollectElementDetail.vue"),
+  },
   {//登陆
     path: '/login',
     name: 'Login',

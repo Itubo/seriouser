@@ -4,7 +4,6 @@ import axios from 'axios'
 export default function request(config) {
     const instance1 = axios.create({
         timeout: 5000,
-        "Content-Type": "application/json",
         transformRequest: [function (data) {
             // 对发送的 data 进行任意转换处理
             //待处理
@@ -15,7 +14,7 @@ export default function request(config) {
 }
 //请求拦截器
 axios.interceptors.request.use((config) => {
-    // console.log('这是拦截的数据！',config);
+    console.log('这是拦截的数据！',config);
     // let userinfo = window.localStorage.getItem('userinfo') || '';
     // // 判断token存在再做配置
     // if (userinfo) {

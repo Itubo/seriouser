@@ -10,12 +10,13 @@
         <van-icon name="plus" size="2em" />
       </div>
     </div>
+    <!-- 上传弹出框 -->
     <div>
       <van-popup
         v-model="show"
         round
         position="bottom"
-        :style="{ height: '25%' }"
+        :style="{ height: '40%' }"
       >
         <div class="content">
           <van-field
@@ -27,6 +28,12 @@
             placeholder="请输入感想"
             show-word-limit
             clearable
+          />
+          <van-uploader
+            v-model="multipartFiles"
+            multiple
+            :max-count="1"
+            :after-read="afterRead"
           />
           <div>
             <van-button round type="primary" @click="submitThink">
@@ -41,6 +48,7 @@
 
 <script>
 import TreeHoleitem from "../treeholebox/TreeHoleItem.vue";
+import request from "../../network/index";
 import axios from "axios";
 export default {
   name: "TreeHoleBox",
@@ -48,6 +56,11 @@ export default {
     return {
       show: false,
       message: "",
+      multipartFiles: [],
+      form1: {
+        multipartFile: {},
+        uid: "",
+      },
       form: {
         uid: "",
         content: "",
@@ -59,6 +72,59 @@ export default {
     TreeHoleitem,
   },
   methods: {
+    afterRead(file) {
+      console.log(file);
+      // 开始文件上传操作
+      let multipartFile = new FormData();
+
+      // multipartFile.append('multipartFile',this.dataURLtoFileFun(file.file,'multipartFile'));
+      multipartFile.append("multipartFile", file.file);
+      multipartFile.append("message", this.$store.state.uid);
+      this.form1.multipartFile = multipartFile;
+      file.status = "uploading";
+      file.message = "上传中...";
+      this.form1.uid = this.$store.state.uid;
+      console.log("这似乎", this.form1);
+      console.log(JSON.parse(JSON.stringify(this.form1)));
+      let _that = this;
+      // console.log(this.form1.uid);
+
+      // request({
+      //   url: "/comment/uploadcommentimage",
+      //   method: "post",
+      //   data: {
+      //     uid: this.form1.uid,
+      //     multipartFile: multipartFile,
+      //   },
+      // })
+      // axios
+      //   .post("/comment/uploadcommentimage", multipartFile, {
+      //     headers: { "Content-Type": "multipart/form-data" },
+      //   })
+      axios
+        .post("/comment/uploadcommentimage", {
+          multipartFile,
+          uid: this.form1.uid,
+        })
+        .then((res) => {
+          console.log(res);
+          console.log("上传成功");
+          file.status = "done";
+          file.message = "上传成功";
+          //删除一个头像
+          this.fileList.shift();
+        })
+        .catch((err) => {
+          console.log("出现问题！");
+          console.log(err);
+          file.status = "failed";
+          file.message = "上传失败！";
+          //删除没有上传的头像
+          setTimeout(() => {
+            this.fileList.pop();
+          }, 1000);
+        });
+    },
     addTreeHoleItem() {
       console.log("我点击了！");
       this.show = true;
@@ -93,7 +159,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .treeholebox {
   height: 100%;
   margin: 0 10px;
@@ -131,10 +197,14 @@ export default {
   transform: translate(-50%, -50%);
   color: rgb(199, 199, 199);
 }
+.content > div {
+  position: relative;
+}
 .content > div button {
   position: absolute;
-  bottom: 1vh;
-  left: 20vh;
+  left: 50%;
+  top: 0.625rem;
+  transform: translate(-50%);
 }
 .content {
   height: 6.25rem;
@@ -144,5 +214,9 @@ export default {
   height: 5rem;
   background-color: rgb(244, 244, 244);
   max-height: 6.25rem;
+}
+
+.van-uploader__wrapper {
+  margin-left: 9.375rem;
 }
 </style>

@@ -43,7 +43,7 @@ Vue.use(Field);
 
 Vue.config.productionTip = false
 
-axios.defaults.baseURL="https://69c0e4ba.cpolar.cn";
+axios.defaults.baseURL="https://1d220757.cpolar.cn";
 // axios.defaults.baseURL="http://116.205.137.0:80";
 // axios.defaults.withCredentials= true;
 axios.defaults.headers.common['Authorization'] = "";
