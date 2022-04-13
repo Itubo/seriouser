@@ -129,6 +129,11 @@ export default {
     },
     //请求收藏
     sendLike() {
+      if (!localStorage.getItem("token")) {
+        this.$router.push("/login");
+        Toast("请先登录！");
+        return;
+      }
       this.likesShow = !this.likesShow;
       this.sendLi.bid = this.item.id;
       this.sendLi.uid = this.$store.state.uid;

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="treehole_itemimg">
-      <img :src="item.img_url" alt="" />
+      <img :src="item.img_url" alt="" @click="getMessage(item)" />
       <span>
         {{ item.nickname }}
       </span>
@@ -42,15 +42,29 @@
         </ul>
       </div>
     </div>
+    <div class="popImg">
+      <van-dialog
+        v-model="show"
+        title="个人信息"
+        show-cancel-button
+        confirmButtonColor="green"
+      >
+        <GetUserInfo :info="info"></GetUserInfo>
+      </van-dialog>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import GetUserInfo from "./GetUserInfo.vue";
 export default {
   name: "TreeHoleitem",
   data() {
     return {
+      show: false,
+      info: {},
+      id: "",
       form: {
         ccontent: "",
         uid: "",
@@ -58,9 +72,13 @@ export default {
       },
     };
   },
+  components: {
+    GetUserInfo,
+  },
   props: ["item"],
   methods: {
     detailInfo(item) {
+      console.log(item);
       this.item.show_message = !this.item.show_message;
       this.$bus.$emit("showMessage", item);
     },
@@ -77,9 +95,17 @@ export default {
           console.log("报错!", err);
         });
     },
+    getMessage(item) {
+      axios.post("/comment/findPeople", this.id).then((res) => {
+        console.log(res);
+      });
+      this.show = true;
+      console.log("我弹出了！", item);
+    },
   },
   mounted() {
     this.messageList = this.item.ccontent;
+    this.id = this.item.id;
   },
 };
 </script>

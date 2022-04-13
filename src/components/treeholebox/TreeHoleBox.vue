@@ -30,9 +30,8 @@
             clearable
           />
           <van-uploader
-            v-model="multipartFiles"
-            multiple
-            :max-count="1"
+            v-model="fileList"
+            :max-count="3"
             :after-read="afterRead"
           />
           <div>
@@ -56,7 +55,8 @@ export default {
     return {
       show: false,
       message: "",
-      multipartFiles: [],
+      imgListLength: 0,
+      fileList: [],
       form1: {
         multipartFile: {},
         uid: "",
@@ -76,53 +76,28 @@ export default {
       console.log(file);
       // 开始文件上传操作
       let multipartFile = new FormData();
-
       // multipartFile.append('multipartFile',this.dataURLtoFileFun(file.file,'multipartFile'));
       multipartFile.append("multipartFile", file.file);
       multipartFile.append("message", this.$store.state.uid);
-      this.form1.multipartFile = multipartFile;
+      // this.form1.multipartFile = multipartFile;
       file.status = "uploading";
       file.message = "上传中...";
       this.form1.uid = this.$store.state.uid;
-      console.log("这似乎", this.form1);
-      console.log(JSON.parse(JSON.stringify(this.form1)));
       let _that = this;
-      // console.log(this.form1.uid);
-
-      // request({
-      //   url: "/comment/uploadcommentimage",
-      //   method: "post",
-      //   data: {
-      //     uid: this.form1.uid,
-      //     multipartFile: multipartFile,
-      //   },
-      // })
-      // axios
-      //   .post("/comment/uploadcommentimage", multipartFile, {
-      //     headers: { "Content-Type": "multipart/form-data" },
-      //   })
       axios
-        .post("/comment/uploadcommentimage", {
-          multipartFile,
-          uid: this.form1.uid,
-        })
+        .post("/comment/uploadcommentimage", multipartFile)
         .then((res) => {
-          console.log(res);
-          console.log("上传成功");
+          // console.log(res);
+          // console.log("上传成功");
+          this.imgListLength++;
           file.status = "done";
           file.message = "上传成功";
-          //删除一个头像
-          this.fileList.shift();
         })
         .catch((err) => {
           console.log("出现问题！");
           console.log(err);
           file.status = "failed";
           file.message = "上传失败！";
-          //删除没有上传的头像
-          setTimeout(() => {
-            this.fileList.pop();
-          }, 1000);
         });
     },
     addTreeHoleItem() {
@@ -131,9 +106,10 @@ export default {
     },
     //上传动态
     submitThink() {
-      console.log(this.$store.state.uid, this.message);
+      console.log("我点击了！");
       this.form.uid = this.$store.state.uid;
       this.form.content = this.message;
+      console.log(this.form);
       let obj = {
         uid: this.$store.state.uid,
         content: this.message,
@@ -145,9 +121,16 @@ export default {
       };
       if (this.message === "") return;
       axios
-        .post("/treehole/add", this.form)
+        .post("/comment/add", this.form)
         .then((res) => {
           console.log(res);
+          let str = res.data.data.addresses;
+          let imageList = str.split(";");
+
+          for (let i = 1; i <= this.imgListLength; i++) {
+            obj.img_url_in.unshift(imageList[i]);
+          }
+          this.show = false;
         })
         .catch((err) => {
           console.log(err);
