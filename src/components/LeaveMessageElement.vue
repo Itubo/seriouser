@@ -27,7 +27,7 @@ export default {
 <style scoped>
 .messageBox ul li {
   height: 10vh;
-
+  margin-bottom: 5px;
   text-align: center;
   line-height: 10vh;
   max-width: 100%;

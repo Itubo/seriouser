@@ -6,7 +6,7 @@
         {{ item.nickname }}
       </span>
     </div>
-    <div class="treehole_item_element" @click="detailInfo(item)">
+    <div class="treehole_item_element">
       <p>{{ item.content }}</p>
       <div class="treehole_item_element_list">
         <img
@@ -19,16 +19,18 @@
     </div>
     <div class="treehole_item_bottom">
       <div class="input">
-        <input
-          type="text"
-          v-model="form.ccontent"
-          placeholder="留言"
-          @blur="submitComment"
-        />
+        <input type="text" v-model="form.ccontent" placeholder="留言" />
+        <van-icon name="arrow" @click="submitComment" />
       </div>
       <div class="button">
         <van-icon name="like-o" style="z-index: -1px" />
         <van-icon name="star-o" />
+      </div>
+      <div class="isAnoymous">
+        <label>
+          <input type="checkbox" v-model="toAnoymous" />
+          匿名发送
+        </label>
       </div>
     </div>
     <!-- 留言模块！ -->
@@ -64,7 +66,11 @@ export default {
     return {
       show: false,
       info: {},
-      id: "",
+      id: 0,
+      submitId: {
+        id: "",
+      },
+      toAnoymous: false,
       form: {
         ccontent: "",
         uid: "",
@@ -77,27 +83,36 @@ export default {
   },
   props: ["item"],
   methods: {
-    detailInfo(item) {
-      console.log(item);
-      this.item.show_message = !this.item.show_message;
-      this.$bus.$emit("showMessage", item);
-    },
+    // 展示留言
+    // detailInfo(item) {
+    //   // console.log(item);
+    //   this.item.show_message = !this.item.show_message;
+    //   this.$bus.$emit("showMessage", item);
+    // },
     //添加 comment  请求：
     submitComment() {
-      this.form.uid = this.$store.state.uid;
+      if (this.form.ccontent === "") return;
+      this.form.uid = this.toAnoymous ? this.$store.state.uid : "";
       this.form.tid = this.item.tid;
+      console.log(this.form);
       axios
         .post("/comment/add", this.form)
         .then((res) => {
           console.log(res);
+          // this.$router.replace("/treehole");
+          this.$forceUpdate();
         })
         .catch((err) => {
           console.log("报错!", err);
         });
     },
     getMessage(item) {
-      axios.post("/comment/findPeople", this.id).then((res) => {
-        console.log(res);
+      this.submitId.id = item.id;
+      axios.post("/treehole/findPeople", this.submitId).then((res) => {
+        console.log("这是头像详情", res);
+        // this.item.img_url = res.data.data.headportrait;
+        this.info = res.data.data;
+        // this.info = res.data.data;
       });
       this.show = true;
       console.log("我弹出了！", item);
@@ -106,11 +121,18 @@ export default {
   mounted() {
     this.messageList = this.item.ccontent;
     this.id = this.item.id;
+    // console.log("这个id 是：", this.id);
+    // console.log(this.item);
+    // console.log(this.messageList, "messageList");
+    // console.log(this.item);
   },
 };
 </script>
 
 <style scoped>
+.treehole_itemimg {
+  margin-bottom: 0.625rem;
+}
 .treehole_itemimg img {
   height: 1.9rem;
   width: 1.9rem;
@@ -127,6 +149,7 @@ export default {
   margin-block: 2px;
   margin-top: 5px;
   margin-bottom: 5px;
+  padding: 0 0.3125rem;
 }
 .treehole_item_element img {
   height: 5.25rem;
@@ -146,12 +169,20 @@ export default {
   height: 100%;
   display: inline-block;
   margin: 0.625rem 0;
+  position: relative;
 }
 .input input {
-  width: 100%;
+  width: 80%;
   height: 80%;
   outline: none;
   border-color: transparent;
+}
+.input i {
+  position: absolute;
+  right: 10%;
+  top: 50%;
+  transform: translate(0, -50%);
+  color: rgb(66, 130, 181);
 }
 .button {
   width: 20%;
@@ -160,19 +191,21 @@ export default {
   float: right;
   margin-right: 20px;
 }
+.isAnoymous {
+  margin-bottom: 0.3125rem;
+}
 .leave_message > div {
   width: 100%;
 }
 .leave_message ul li {
-  height: 1.5625rem;
   margin: 0;
   border: none;
+  line-height: 1.5625rem;
 }
 .leave_message p:first-child {
   font-size: 12px;
   display: inline-block;
   margin: 0 0.625rem 0 0;
-  line-height: 1.125rem;
 }
 .leave_message p:last-child {
   font-size: 12px;
@@ -180,7 +213,6 @@ export default {
   display: inline-block;
   margin: 0;
   height: 100%;
-  line-height: 1.125rem;
   white-space: nowrap;
   max-width: 16.25rem;
 }

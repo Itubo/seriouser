@@ -42,12 +42,12 @@ export default {
   data() {
     return {
       form: {
-        username: "",
+        nickname: "",
         passwd: "",
       },
       sms: "",
       pattern: {
-        username: /^[a-zA-Z0-9_-]{4,16}$/,
+        nickname: /^[a-zA-Z0-9_-]{4,16}$/,
         password:
           /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{8,16}$/,
       },
@@ -60,6 +60,8 @@ export default {
   methods: {
     getForm(value) {
       this.form = value;
+      // this.form.nickname = value.username;
+      // this.form.passwd = value.passwd;
       // console.log(this.form);
     },
     toRegister() {
@@ -87,18 +89,20 @@ export default {
         .post("/user/login", this.form)
         .then((res) => {
           let token = res.data.data.token || "";
+          console.log(token);
           localStorage.setItem(
             "token",
             token === "" ? "" : JSON.stringify(token)
           );
+          let uid = res.data.data.uid || "";
+          console.log("登录时加uid", uid);
+          localStorage.setItem("uid", uid === "" ? "" : JSON.stringify(uid));
+          //将
           _that.$store.commit("setTokenFromLocal");
+          _that.$store.commit("setUidFormLocal");
           let obj = res.data.data.user;
-          _that.$store.commit("setForm", {
-            nickname: obj.nickname,
-            username: obj.username,
-            email: obj.email,
-            uid: obj.uid,
-          });
+          console.log(obj);
+          _that.$store.commit("setForm", obj);
           _that.$router.replace("/home");
         })
         .catch((err) => {

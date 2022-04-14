@@ -7,7 +7,7 @@
     </ul>
     <div class="popElement" v-show="listShow">
       <ul>
-        <li><a href="https://2a0e7195.cpolar.cn/chat.html">聊天室</a></li>
+        <li><a href="http://116.205.137.0:7777/static/chat.html">聊天室</a></li>
         <li @click="toLetter">漂流瓶</li>
       </ul>
     </div>

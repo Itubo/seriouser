@@ -5,7 +5,7 @@
     </Navbar>
     <van-cell-group style="margin: 4.167vw 0">
       <van-field
-        v-model="form.nickname"
+        v-model="form.username"
         label="昵称"
         placeholder="请输入昵称"
         clearable
@@ -133,9 +133,13 @@ export default {
         .then((res) => {
           console.log(res);
           console.log(res.data.data);
-          this.session = res.data.data;
-          console.log("session:     ", this.session);
-          this.checkEmailInput = true;
+          if (res.data.flag) {
+            this.session = res.data.data;
+            console.log("session:     ", this.session);
+            this.checkEmailInput = true;
+          } else {
+            Toast("验证码发送失败！");
+          }
         })
         .catch((err) => {
           console.log("出问题了！", err);
@@ -145,7 +149,7 @@ export default {
     sendMessage() {
       this.checked = true;
       if (
-        this.form.username === "" || //用户名
+        this.form.nickname === "" || //用户名
         this.form.passwd === "" || //密码
         this.form.email === "" || //邮箱
         this.form.verifyinput === "" //邮箱验证码
@@ -167,6 +171,7 @@ export default {
           })
           .then((res) => {
             Toast(res.data.message);
+            this.$router.replace("/login");
           })
           .catch((err) => {
             console.log("上报错误1", err);

@@ -12,7 +12,6 @@
       <van-loading v-if="atLoading" color="rgb(7, 193, 96)" vertical size="30px"
         >加载中...</van-loading
       >
-   
     </div>
     <div class="detailsInfo" v-if="showDetails">
       <Details :item="this.detailsElement"></Details>
@@ -26,6 +25,7 @@ import SearchBar from "@/components/SearchBar";
 import NullStatus from "../components/common/NullStatus";
 import Details from "../components/IndexDetails/Details";
 import axios from "axios";
+import { Toast } from "vant";
 export default {
   name: "FontPage",
   data() {
@@ -38,7 +38,6 @@ export default {
       tips: "下拉刷新",
       showDetails: false,
       detailsElement: {},
-
     };
   },
   components: {
@@ -64,6 +63,10 @@ export default {
       this.showNull = true;
       this.showList = false;
       this.atLoading = false;
+      setTimeout(() => {
+        this.setShowNullFalse();
+        Toast("请求结果为空，自动返回主界面！");
+      }, 1000);
     },
     //修改状态：
     setShowNullFalse() {
@@ -86,8 +89,6 @@ export default {
     setDetailElement(value) {
       this.detailsElement = value;
     },
-
-
   },
   mounted() {
     //在bus 上 注册一个 获取网络错误的 事件

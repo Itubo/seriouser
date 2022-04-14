@@ -43,14 +43,15 @@ Vue.use(Field);
 
 Vue.config.productionTip = false
 
-// axios.defaults.baseURL="https://54928e26.cpolar.cn";
-axios.defaults.baseURL="http://116.205.137.0:7777";
+// axios.defaults.baseURL="http://60a5e054.cpolar.cn";
+// axios.defaults.baseURL="http://116.205.137.0:7777";
+axios.defaults.baseURL="/";
 
 // axios.defaults.baseURL="http://localhost:7777/";
 
 // axios.defaults.withCredentials= true;
 axios.defaults.headers.common['Authorization'] = "";
-axios.defaults.headers['token'] =  JSON.parse(localStorage.getItem("token")) || "",
+axios.defaults.headers['token'] = "",
 
 new Vue({
   router,

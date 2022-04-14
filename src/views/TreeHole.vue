@@ -93,12 +93,14 @@ export default {
         });
         _that.list = treehole;
         _that.list = _that.list.filter((p) => {
-          p.img_url =
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/%27Ommelozen_boom%27.jpg/250px-%27Ommelozen_boom%27.jpg";
+          p.img_url = p.img_url
+            ? p.img_url
+            : "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/%27Ommelozen_boom%27.jpg/250px-%27Ommelozen_boom%27.jpg";
           p.img_url_in = p.img_url_in ? p.img_url_in.split(";") : [];
           p.likes = false;
           p.collected = false;
           p.show_message = false;
+          console.log(p);
           return true;
         });
       })

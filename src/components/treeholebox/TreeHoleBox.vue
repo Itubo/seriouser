@@ -85,7 +85,7 @@ export default {
       this.form1.uid = this.$store.state.uid;
       let _that = this;
       axios
-        .post("/comment/uploadcommentimage", multipartFile)
+        .post("/treehole/uploadcommentimage", multipartFile)
         .then((res) => {
           // console.log(res);
           // console.log("上传成功");
@@ -111,6 +111,7 @@ export default {
       this.form.content = this.message;
       console.log(this.form);
       let obj = {
+        nickname: this.$store.state.nickname,
         uid: this.$store.state.uid,
         content: this.message,
         img_url:
@@ -119,24 +120,29 @@ export default {
         likes: false,
         collected: false,
       };
+      console.log("obj======", obj);
+      let _that = this;
       if (this.message === "") return;
       axios
-        .post("/comment/add", this.form)
+        .post("/treehole/add", this.form)
         .then((res) => {
-          console.log(res);
+          console.log("这是box中申请", res);
+          obj.img_url =
+            res.data.data.img_url ||
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/%27Ommelozen_boom%27.jpg/250px-%27Ommelozen_boom%27.jpg";
           let str = res.data.data.addresses;
           let imageList = str.split(";");
 
           for (let i = 1; i <= this.imgListLength; i++) {
             obj.img_url_in.unshift(imageList[i]);
           }
-          this.show = false;
+          _that.show = false;
+          this.list.unshift(obj);
         })
         .catch((err) => {
           console.log(err);
           console.log("报错!");
         });
-      this.list.unshift(obj);
     },
   },
 };

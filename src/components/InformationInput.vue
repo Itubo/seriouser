@@ -7,6 +7,7 @@
         <div>
           <van-uploader
             v-model="fileList"
+            :max-count="1"
             :after-read="afterRead"
             :before-delete="beforeDelete"
           />
@@ -51,7 +52,6 @@
       />
       <van-field
         v-model="form.college"
-        type="digit"
         label="学院"
         placeholder="请输入学院"
         colon
@@ -78,7 +78,7 @@
 
     <!--    提交按钮！-->
     <div class="button_area">
-      <van-button type="primary">确定修改</van-button>
+      <van-button type="primary" @click="submitInfo">确定修改</van-button>
     </div>
   </div>
 </template>
@@ -96,12 +96,9 @@ export default {
       messageBeginUpload: "上传中...",
       statusFailed: "failed",
       messageFailed: "上传失败",
-      fileList: [
-        {
-          url: "https://img01.yzcdn.cn/vant/tree.jpg",
-        },
-      ],
+      fileList: [],
       form: {
+        uid: "",
         nickname: "",
         sex: "",
         description: "",
@@ -149,7 +146,7 @@ export default {
           file.status = "done";
           file.message = "上传成功";
           //删除一个头像
-          this.fileList.shift();
+          this.fileList.unshift();
         })
         .catch((err) => {
           console.log("出现问题！");
@@ -181,6 +178,22 @@ export default {
         return false;
       }
       return true;
+    },
+    submitInfo() {
+      this.form.uid = this.$store.state.uid;
+      console.log("这是信息修改的uid", this.form);
+      axios
+        .post("/user/saveuser", this.form)
+        .then((res) => {
+          console.log(res);
+          if (res.data.flag) {
+            Toast("信息修改成功！");
+          }
+        })
+        .catch((err) => {
+          console.log("出现错误");
+          console.log(err);
+        });
     },
   },
 };

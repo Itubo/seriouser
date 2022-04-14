@@ -3,7 +3,7 @@
     <van-cell-group>
       <van-form>
         <van-field
-          v-model="form.username"
+          v-model="form.nickname"
           label="账号"
           placeholder="请输入用户名"
           clearable
@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       form: {
-        username: "",
+        nickname: "",
         passwd: "",
       },
       rules: {

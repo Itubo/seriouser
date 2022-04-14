@@ -1,13 +1,37 @@
 <template>
   <div class="box">
     <ul>
-      <li v-for="(value, key, index) of shen" :key="index">
-        <div>
+      <!-- <li v-for="(value, key, index) of info" :key="index">
+        <div v-if="key !== uid">
           {{ key }}
         </div>
-        <div>
+        <div v-if="key !== uid">
           {{ value }}
         </div>
+      </li> -->
+      <li>
+        <div>nickname:</div>
+        <div>{{ info.nickname }}</div>
+      </li>
+      <li>
+        <div>sex:</div>
+        <div>{{ info.sex }}</div>
+      </li>
+      <li>
+        <div>description:</div>
+        <div>{{ info.description }}</div>
+      </li>
+      <li>
+        <div>digit:</div>
+        <div>{{ info.digit }}</div>
+      </li>
+      <li>
+        <div>grade:</div>
+        <div>{{ info.garde }}</div>
+      </li>
+      <li>
+        <div>college</div>
+        <div>{{ info.college }}</div>
       </li>
     </ul>
   </div>

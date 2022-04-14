@@ -105,12 +105,12 @@ export default {
       grade: "",
       //详细页进入后直接调用
       form: {
-        id: "",
+        id: 0,
         uidn: "",
       },
       //like 修改
       sendLi: {
-        bid: "",
+        bid: 0,
         uid: "",
         like: "",
       },
@@ -129,7 +129,11 @@ export default {
     },
     //请求收藏
     sendLike() {
-      if (!localStorage.getItem("token")) {
+      if (
+        localStorage.getItem("token") &&
+        localStorage.getItem("token") === ""
+      ) {
+        console.log("我进来了，准备跳到登录！");
         this.$router.push("/login");
         Toast("请先登录！");
         return;
@@ -141,7 +145,7 @@ export default {
       axios
         .post("/book/wantBuy", this.sendLi)
         .then((res) => {
-          console.log(res);
+          console.log("主页详情的请求：", res);
           Toast(res.data.message);
         })
         .catch((err) => {
@@ -153,14 +157,16 @@ export default {
     console.log(this.item);
     this.form.id = this.item.id;
     this.form.uidn = this.$store.state.uid;
+    let _that = this;
     axios
       .post("/book/findOneBook", this.form)
       .then((res) => {
         console.log(res);
-        this.likesShow = res.data.data.like;
-        this.college = res.data.data.college;
-        this.nickname = res.data.data.nickname;
-        this.grade = res.data.data.garde;
+        _that.likesShow = res.data.data.like;
+        _that.college = res.data.data.college;
+        _that.nickname = res.data.data.nickname;
+        _that.grade = res.data.data.garde;
+        console.log(_that.likesShow);
       })
       .catch((err) => {
         console.log(err);

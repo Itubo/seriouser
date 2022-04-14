@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import request from "@/network/index.js";
 import axios from "axios";
 import ListItem from "@/components/ListItem";
 export default {
@@ -47,6 +46,7 @@ export default {
       show: false, // 是否展示弹出层
       actions: [
         { name: "东苑" },
+        { name: "南苑" },
         { name: "华苑" },
         { name: "北苑" },
         { name: "顺和" },

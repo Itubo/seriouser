@@ -89,11 +89,13 @@ export default {
   },
   mounted() {
     this.form.uid = this.$store.state.uid;
+    console.log(this.form.uid);
     axios
       .post("/user/findUserInfo", this.form)
       .then((res) => {
         console.log(res);
-        this.src = res.data.data.headportrait;
+        this.src =
+          res.data.data.headportrait || "https://img01.yzcdn.cn/vant/cat.jpeg";
         this.title = res.data.data.nickname;
         this.dec = res.data.data.description;
       })

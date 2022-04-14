@@ -29,7 +29,7 @@
               </label>
             </div>
             <div>
-              <label for="">
+              <label>
                 <input type="checkbox" v-model="anonymous" />
                 是否匿名
               </label>
@@ -98,7 +98,7 @@ export default {
         this.$router.push("/leavemessage");
       } else if (e === 2) {
         this.title = "树洞来信";
-        await this.getContentHoleLetter();
+        (this.getMailContent = "请稍等..."), await this.getContentHoleLetter();
         this.show_two = !this.show_two;
       } else {
         this.title = "许愿树";
@@ -109,6 +109,7 @@ export default {
       axios
         .post("/letter/getrandomletter")
         .then((res) => {
+          console.log("这是正则目标字符串", res.data.data.content);
           this.getMailContent = res.data.data.content.replace(/\r\n/g, "<br/>");
           this.form.verify = res.data.data.verify;
         })
@@ -122,6 +123,7 @@ export default {
           .post("/letter/writeletter", this.sendMail)
           .then((res) => {
             Toast("发送成功,一年后方可再次查看！");
+            this.sendMail.content = "";
           })
           .catch((err) => {
             console.log("错误！");
@@ -131,14 +133,24 @@ export default {
       }
     },
     sendliuyan() {
-      if (!this.anonymous) {
-        this.form.uid = this.$store.state.uid;
+      console.log("我没点错！");
+      console.log(this.anonymous);
+      if (this.anonymous === false) {
+        this.form.uid = JSON.parse(localStorage.getItem("uid"));
+      } else {
+        this.form.uid = "";
+      }
+
+      if (this.form.content === "") {
+        return Toast("请输入留言信息！");
       }
       console.log(this.form);
       axios
         .post("/letter/replyletter", this.form)
         .then((res) => {
           console.log(res);
+          this.form.content = "";
+          location.reload();
         })
         .catch((err) => {
           console.log(err);
@@ -147,6 +159,7 @@ export default {
   },
   mounted() {
     this.sendMail.uid = this.$store.state.uid;
+    // console.log(this.$store.state.uid);
   },
 };
 </script>

@@ -14,7 +14,7 @@
           <div>输入账号</div>
           <van-form>
             <van-field
-              v-model="form.username"
+              v-model="form.nickname"
               label="账号"
               placeholder="请输入用户名"
               clearable
@@ -102,18 +102,25 @@
 
 <script>
 import axios from "axios";
+import { Toast } from "vant";
 export default {
   name: "BeforeFine",
   data() {
     return {
       active: 0,
       show: true,
+      sessionID: "",
+      checkform: {
+        nickname: false,
+        nickname_mail: false,
+      },
       form: {
-        username: "",
+        nickname: "",
         email: "",
         verifycode: "",
         password: "",
         passwordan: "",
+        session: "",
       },
       //用于判断验证码是否通过
       checked: false,
@@ -155,10 +162,9 @@ export default {
     };
   },
   methods: {
+    //下一步
     nextStep() {
       console.log("我点击这个事件了！");
-      console.log(this.active);
-      console.log(this.pattern.username.test(this.form.username));
       if (this.active === 3) {
         this.firstButton = "完成";
       }
@@ -166,17 +172,28 @@ export default {
       if (
         !(
           (this.active === 0 &&
-            this.pattern.username.test(this.form.username)) ||
+            this.pattern.username.test(this.form.nickname)) ||
           (this.active === 1 && this.pattern.email.test(this.form.email)) ||
-          this.active === 2
+          this.active === 2 ||
+          this.active === 3
         )
       ) {
         console.log(this.pattern.email.test(this.form.email));
         console.log(this.form.email);
         return;
       }
+      if (this.active === 0) {
+        this.checkNickname();
+      } else if (this.active === 1) {
+        this.checkNicknameEmail();
+      } else if (this.active === 2) {
+        this.resetPassword();
+      } else if (this.active === 3) {
+        this.changePasswd();
+      }
       this.active++;
     },
+    //上一步
     lastStep() {
       //当 第一个按钮为 完成时，说明是最后一页。给主界面发信息，并且让其恢复 原来的数据。
       if (this.firstButton === "完成") {
@@ -187,23 +204,61 @@ export default {
       this.active--;
     },
     //最后一步点击事件：
+    //检查nickname
+    checkNickname() {
+      if (this.form.nickname === "") return;
+      let _that = this;
+      axios
+        .post("/user/checkNickname", { nickname: _that.form.nickname })
+        .then((res) => {
+          console.log(res);
+          this.checkform.nickname = res.data.flag;
+        })
+        .catch((err) => {
+          console.log("错误！");
+          Toast("网络错误！");
+        });
+    },
+    //检查nickname和email 是否一样
+    checkNicknameEmail() {
+      if (this.form.email === "") return;
+      axios
+        .post("/user/match", {
+          // nickname: this.form.username,
+          nickname: this.form.nickname,
+          email: this.form.email,
+        })
+        .then((res) => {
+          console.log(res);
+          this.checkform.nickname_mail = res.data.data;
+        })
+        .catch((err) => {
+          console.log("出现错误！");
+          Toast("网络错误！");
+        });
+    },
     //查看 username 是否存在，并与email 校对
     checkUsernameAndEmail() {
-      if (Username === "" || Email === "") {
-      }
+      return this.checkform.nickname && this.checkform.nickname_mail;
     },
     //异步请求sms
     getsms() {
+      console.log(this.checkUsernameAndEmail());
+      if (this.checkUsernameAndEmail() === false) {
+        Toast("邮箱或账号信息有误！");
+        return;
+      }
       axios
         .post(
-          "/sendMail/sendMailVerfityINput",
+          "/sendMail/sendMailAgain",
           {
             email: this.form.email,
+            nickname: this.form.nickname,
           },
           { timeout: 5000 }
         )
         .then((res) => {
-          this.checkEmailInput = true;
+          this.checked = true;
           this.form.session = res.data;
           console.log(res.data);
         })
@@ -220,13 +275,14 @@ export default {
           "/user/check",
           {
             nickname: this.form.nickname,
-            verifycode: this.form.verifycode,
+            verifyinput: this.form.verifycode,
           },
           { timeout: 5000 }
         )
         .then((res) => {
+          console.log(res);
           //此处用于判断CODE 是否正确
-          if (res.r.flag === true) {
+          if (res.data.flag === true) {
             _that.checked = true;
           } else {
             _that.checked = false;
@@ -235,25 +291,32 @@ export default {
         })
         .catch((err) => {
           Toast("网络出现问题！");
+          console.log("外层", err);
         });
-      if (this.checked) {
-        axios
-          .post("/user/modifypasswd", {
-            nickname: this.form.nickname,
-            passwd: this.form.passwd,
-          })
-          .then((res) => {
-            if (res.R.flag === true) {
-              Toast("密码重置成功！");
-              _that.$router.replace("/login");
-            } else {
-              Toast("重置失败！");
-            }
-          })
-          .catch((err) => {
-            Toast("网络出问题！");
-          });
+    },
+    changePasswd() {
+      if (this.form.password !== this.form.passwordan) {
+        Toast("两次密码输入不一样！");
+        return;
       }
+      if (this.form.password === "") return Toast("请输入密码！");
+      axios
+        .post("/user/modifypasswd", {
+          nickname: this.form.nickname,
+          passwd: this.form.password,
+        })
+        .then((res) => {
+          if (res.data.flag === true) {
+            Toast("密码重置成功！");
+            this.$router.replace("/login");
+          } else {
+            Toast("重置失败！");
+          }
+        })
+        .catch((err) => {
+          Toast("网络出问题！");
+          console.log(err);
+        });
     },
   },
   computed: {

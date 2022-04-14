@@ -9,6 +9,7 @@
         <div class="update_element_img">
           <div>
             <van-uploader
+              :max-count="2"
               v-model="fileList"
               :after-read="afterRead"
               :before-delete="beforeDelete"
@@ -46,17 +47,22 @@
         </van-popup>
       </div>
       <div>
-        <van-field v-model="form.price" label="价格" placeholder="出版次数" />
+        <van-field v-model="form.price" label="价格" placeholder="价格" />
       </div>
-      <div>
+      <div class="addressItem">
         <!-- <van-field v-model="form.address" label="出书地址" placeholder="地址" /> -->
         <van-cell is-link title="地址" @click="showAddressPop = true" />
-        <van-action-sheet v-model="showAddressPop" title="标题">
+        <div class="addressShow">
+          {{ form.address }}
+        </div>
+        <van-action-sheet v-model="showAddressPop" title="地址">
           <van-cell title="" @click="changeTitle"></van-cell>
           <van-cell title="东苑" @click="changeTitle(1)"></van-cell>
           <van-cell title="北苑" @click="changeTitle(2)"></van-cell>
           <van-cell title="南苑" @click="changeTitle(3)"></van-cell>
           <van-cell title="华苑" @click="changeTitle(4)"></van-cell>
+          <van-cell title="顺和" @click="changeTitle(5)"></van-cell>
+          <van-cell title="郑州" @click="changeTitle(6)"></van-cell>
         </van-action-sheet>
       </div>
       <div>
@@ -88,9 +94,9 @@ export default {
       statusFailed: "failed",
       messageFailed: "上传失败",
       fileList: [
-        {
-          url: "https://img01.yzcdn.cn/vant/tree.jpg",
-        },
+        // {
+        //   url: "https://img01.yzcdn.cn/vant/tree.jpg",
+        // },
       ],
       form: {
         uid: "",
@@ -146,8 +152,12 @@ export default {
         this.form.address = "北苑";
       } else if (title === 3) {
         this.form.address = "南苑";
-      } else {
+      } else if (title === 4) {
         this.form.address = "华苑";
+      } else if (title === 5) {
+        this.form.address = "顺和";
+      } else {
+        this.form.address = "郑州";
       }
       this.showAddressPop = false;
     },
@@ -243,5 +253,15 @@ export default {
 /* 地址弹出 */
 .content {
   padding: 16px 16px 160px;
+}
+.addressItem {
+  position: relative;
+}
+.addressShow {
+  position: absolute;
+  top: 50%;
+  left: 33%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
 }
 </style>
